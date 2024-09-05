@@ -1,0 +1,33 @@
+function love.load()
+    -- Load a particle image
+    local particleImage = love.graphics.newImage("particle.png")
+
+    -- Create the particle system with the image and set a buffer size
+    particleSystem = love.graphics.newParticleSystem(particleImage, 100)
+
+    -- Configure the particle system
+    particleSystem:setParticleLifetime(1, 2) -- Particles live between 1 and 2 seconds
+    particleSystem:setEmissionRate(50) -- Emit 50 particles per second
+    particleSystem:setSizeVariation(1) -- Full range of particle sizes
+    particleSystem:setLinearAcceleration(-20, -20, 20, 20) -- Random movement in all directions
+    particleSystem:setColors(255, 255, 255, 255, 255, 255, 255, 0) -- Particles fade to transparent
+end
+
+function love.update(dt)
+    -- Update the particle system
+    particleSystem:update(dt)
+
+    -- Emit particles at the current mouse position if the left mouse button is held down
+    if love.mouse.isDown(1) then
+        local x, y = love.mouse.getPosition()
+        particleSystem:setPosition(x, y)
+        particleSystem:start()  -- Start the particle system
+    else
+        particleSystem:stop()   -- Stop the particle system from emitting new particles
+    end
+end
+
+function love.draw()
+    -- Draw the particle system
+    love.graphics.draw(particleSystem)
+end
