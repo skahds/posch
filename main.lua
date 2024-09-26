@@ -3,6 +3,7 @@ require('player')
 require('baseClass')
 require('collision')
 require('foundationClass')
+require('broadcast')
 
 sWidth = love.graphics.getWidth()
 sHeight = love.graphics.getHeight()
@@ -10,11 +11,10 @@ sHeight = love.graphics.getHeight()
 world = {}
 
 
+
 function love.load()
-    world = {
-    entity:new({x=500, y=100, width=100, height=550, colliderTag={"ent"}}),
-    movingBox:new({x=100, y=100, width=100, height=100, colliderTag={"ent"}})
-    }
+    world = {}
+    posch.call("@loaded")
 end
 
 function love.update(dt)
@@ -38,3 +38,4 @@ function love.keyreleased(key)
         love.event.quit()
     end
 end
+

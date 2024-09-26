@@ -21,6 +21,8 @@ function entity:init(args)
     self.height = args.height or 100
     self.colliderTag = args.colliderTag or nil
     self.tag = args.tag or {"ent"}
+
+    self.particles = {}
 end
 
 function entity:update()
@@ -33,7 +35,7 @@ function entity:draw()
     end
 end
 
-function entity:collide()                
+function entity:checkCollision()                
     if self.colliderTag ~= nil then
     for _, obj in ipairs(world) do
         if obj ~= self then
@@ -41,7 +43,7 @@ function entity:collide()
                 for _, CollideTag in ipairs(obj.colliderTag) do
                     for _, selfCollideTag in ipairs(self.colliderTag) do
                         if CollideTag == selfCollideTag then
-                            return true
+                            return obj
                         end
                     end
                 end
@@ -51,6 +53,10 @@ function entity:collide()
     end
 end
 
+function entity:collided(collidingEnt)
+    print("bump")
+end
+
 function entity:move(x, y)
     x = x or 0
     y = y or 0
@@ -58,17 +64,56 @@ function entity:move(x, y)
     self.y = self.y + y
 end
 
-function entity:moveAndCollide(x, y, slide)
-    slide = slide or false
+--extraComp is a table, slide = {perfectAlign=true/false}
+--perfectAlign is optional
+function entity:moveAndCollide(x, y, extraComp)
+    extraComp = extraComp or {}
+    
+    local slide = extraComp.slide or false
+    local perfectAlign = false
+
+    if slide then
+    perfectAlign = extraComp.slide.perfectAlign or false
+    end
+
     self:move(x)
-    if slide == true then
-        if self:collide() then
-            self:move(-x)
+    -- if sliding is enabled, we want to check collision twice
+    if slide  then
+        local collisionObjx = self:checkCollision()
+        if collisionObjx then
+            -- trigger both obj's collided
+            self:collided(collisionObjx)
+            collisionObjx:collided(self)
+            
+            if perfectAlign == false then
+                self:move(-x)
+            else
+                if self.x < collisionObjx.x then
+                    self.x = (collisionObjx.x - self.width)
+                else
+                    self.x = (collisionObjx.x+collisionObjx.width)
+                end
+            end
+
         end
     end
     self:move(0, y)
-    if self:collide() then
-        self:move(0, -y)
+    local collisionObjy = self:checkCollision()
+    if collisionObjy then
+        -- trigger both obj's collided
+        self:collided(collisionObjy)
+        collisionObjy:collided(self)
+        
+        if perfectAlign == false then
+            self:move(0, -y)
+        else
+            if self.y > collisionObjy.y then
+                self.y = (collisionObjy.y + collisionObjy.height)
+            else
+                self.y = (collisionObjy.y - self.height)
+            end
+        end
+
         if slide == false then
             self:move(-x)
         end
