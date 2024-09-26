@@ -1,10 +1,20 @@
 require('baseClass')
-movingBox = Class(entity)
-function movingBox:update(dt)
-    self:moveAndCollide(300*dt, 100*dt, {slide={perfectAlign=true}})
+posch.entities = {}
+local poes = posch.entities
+
+
+poes.wall = Class(entity)
+local wall = poes.wall
+function wall:init(args)
+    entity.init(self, args)
+
+    self.width = args.width or 50
+    self.height = args.height or 50
 end
 
-player = Class(entity)
+
+poes.player = Class(entity)
+local player = poes.player
 function player:init(args)
     entity.init(self, args)
 

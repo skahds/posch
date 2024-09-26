@@ -1,9 +1,12 @@
+require('broadcast')
 require('class')
-require('player')
 require('baseClass')
 require('collision')
 require('foundationClass')
-require('broadcast')
+
+require('player')
+require('game.game')
+require('game.generation')
 
 sWidth = love.graphics.getWidth()
 sHeight = love.graphics.getHeight()
