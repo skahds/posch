@@ -2,7 +2,7 @@ require('baseClass')
 posch.entities = {}
 local poes = posch.entities
 
-
+-- wall
 poes.wall = Class(entity)
 local wall = poes.wall
 function wall:init(args)
@@ -10,17 +10,25 @@ function wall:init(args)
 
     self.width = args.width or 50
     self.height = args.height or 50
+    self.image = args.image or love.graphics.newImage('assets/image/wall_tile.png')
+    self.render.oy = 8
+    self.tag = {"ent"}
 end
 
 
+-- player
 poes.player = Class(entity)
 local player = poes.player
 function player:init(args)
     entity.init(self, args)
 
+    self.id = "player"
     self.speed = args.speed or 400
     self.vx = 0
     self.vy = 0
+    self.speedMult = 1
+    self.render.drawDepth = 100
+    self.tag = {"ent"}
 end
 
 function player:update(dt)
@@ -42,5 +50,10 @@ function player:update(dt)
         self.vy = 0
     end
 
-    self:moveAndCollide(self.vx*self.speed*dt, self.vy*self.speed*dt, {slide={perfectAlign=true}})
+    if self.vy ~= 0 and self.vx ~= 0 then
+        self.speedMult = 1 / math.sqrt(self.vx^2 + self.vy^2)
+    else
+        self.speedMult = 1
+    end
+    self:moveAndCollide(self.vx*self.speed*self.speedMult*dt, self.vy*self.speed*self.speedMult*dt, {slide={perfectAlign=true}})
 end

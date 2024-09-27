@@ -2,7 +2,7 @@ require("collision")
 
 worldObj = Class()
 function worldObj:init(args)
-
+    self.id = "worldObj"
 end
 
 function worldObj:update()
@@ -13,16 +13,34 @@ function worldObj:draw()
 
 end
 
-entity = Class()
+function worldObj:getID()
+    return self.id
+end
+
+entity = Class(worldObj)
 function entity:init(args)
+    worldObj.init(self, args)
+
+    self.id = "ent"
     self.x = args.x or 0
     self.y = args.y or 0
     self.width = args.width or 100
     self.height = args.height or 100
     self.colliderTag = args.colliderTag or nil
-    self.tag = args.tag or {"ent"}
+    --remember, basic tags are "ent"
+    self.tag = args.tag or {}
 
     self.particles = {}
+    self.image = args.image or nil
+    self.render = {
+        rotation = 0,
+        scaleX = 1,
+        scaleY = 1,
+        ox = 0,
+        oy = 0,
+        drawDepth = 0,
+    }
+    
 end
 
 function entity:update()
@@ -30,7 +48,9 @@ function entity:update()
 end
 
 function entity:draw()
-    if self.x ~= nil and self.y ~= nil and self.width ~= nil and self.height ~= nil then
+    if self.image then
+        love.graphics.draw(self.image, self.x, self.y, self.render.rotation, self.render.scaleX, self.render.scaleY, self.render.ox, self.render.oy)
+    elseif self.x ~= nil and self.y ~= nil and self.width ~= nil and self.height ~= nil then
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     end
 end
@@ -40,7 +60,7 @@ function entity:checkCollision()
     for _, obj in ipairs(world) do
         if obj ~= self then
             if collisionSystem.AABB_Collision(self, obj) then
-                for _, CollideTag in ipairs(obj.colliderTag) do
+                for _, CollideTag in ipairs(obj.tag) do
                     for _, selfCollideTag in ipairs(self.colliderTag) do
                         if CollideTag == selfCollideTag then
                             return obj
