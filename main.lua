@@ -33,7 +33,7 @@ function love.update(dt)
         end
     end
 
-    globals.cam:lookAt(posch.get("playerXY").x, posch.get("playerXY").y)
+
     -- get player x and y
 end
 

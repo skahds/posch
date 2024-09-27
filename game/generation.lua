@@ -114,8 +114,9 @@ posch.on("@loaded", function ()
             end
         end
     end
-    table.insert(world, entity:new({
-        x=0,
-        y=0,
-        image=love.graphics.newImage('assets/image/sand_tile.png')}))
+    table.insert(world, posch.entities.tile:new({
+        image = love.graphics.newImage("assets/image/sand_tile.png"),
+        width = tileSize*width,
+        height = tileSize*height
+    }))
 end)

@@ -28,7 +28,7 @@ function entity:init(args)
     self.height = args.height or 100
     self.colliderTag = args.colliderTag or nil
     --remember, basic tags are "ent"
-    self.tag = args.tag or {}
+    self.tag = args.tag or nil
 
     self.particles = {}
     self.image = args.image or nil
@@ -58,7 +58,7 @@ end
 function entity:checkCollision()                
     if self.colliderTag ~= nil then
     for _, obj in ipairs(world) do
-        if obj ~= self then
+        if obj ~= self and obj.tag then
             if collisionSystem.AABB_Collision(self, obj) then
                 for _, CollideTag in ipairs(obj.tag) do
                     for _, selfCollideTag in ipairs(self.colliderTag) do
