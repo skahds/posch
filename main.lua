@@ -4,10 +4,11 @@ require('baseClass')
 require('collision')
 require('foundationClass')
 
-require('player')
+require('game.player')
 require('game.game')
 require('game.generation')
-require('bullets')
+require('game.bullets')
+require('game.guns')
 
 globals = {}
 sWidth = love.graphics.getWidth()
@@ -46,7 +47,7 @@ end
 
 function love.draw()
     globals.cam:attach()
-    posch.call("@render")
+    posch.call("@render:render")
 
     -- for sorting for drawDepth
     local drawableList = {}
@@ -65,9 +66,9 @@ function love.draw()
     for i, obj in ipairs(drawableList) do
         obj:draw()
     end
-
-    posch.call("@renderedEntity")
     globals.cam:detach()
+
+    posch.call("@render:renderOutsideCamera")
 
 end
 

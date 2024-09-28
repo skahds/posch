@@ -102,6 +102,7 @@ posch.on("@loaded", function ()
         balanceMap()
     end
     lastSmooth()
+
     for x, _ in ipairs(grid) do
         for y, tile in ipairs(grid[x]) do
             if not tile then
@@ -111,12 +112,19 @@ posch.on("@loaded", function ()
                     width=tileSize, 
                     height=tileSize, 
                 }))
+                posch.call("@entityCreated")
             end
         end
     end
+    
     table.insert(world, posch.entities.tile:new({
         image = love.graphics.newImage("assets/image/sand_tile.png"),
         width = tileSize*width,
         height = tileSize*height
     }))
+    posch.call("@entityCreated")
+end)
+
+posch.on("@entityCreated", function ()
+    world[#world].index = #world
 end)

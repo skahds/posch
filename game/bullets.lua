@@ -6,6 +6,10 @@ function basic_bullet:init(args)
     projectile.init(self, args)
     self.width = 12
     self.height = 8
+
+    self.x = self.x+self.width/2
+    self.y = self.y+self.height/2
+
     
     self.id = "basic_bullet"
     self.image = love.graphics.newImage("assets/image/basic_bullet.png")
@@ -14,6 +18,7 @@ function basic_bullet:init(args)
     self.render.drawDepth = 1
     
     self.render.rotation = self.direction
+    self.render.drawDepth = -1
     self.team = "player"
 end
 
@@ -21,5 +26,4 @@ function basic_bullet:collided(obj)
     if obj.team ~= "player" then
         self:delete()
     end
-
 end

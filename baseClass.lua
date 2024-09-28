@@ -20,6 +20,7 @@ end
 entity = Class(worldObj)
 function entity:init(args)
     worldObj.init(self, args)
+    self.index = #world+1
 
     self.id = "ent"
     self.x = args.x or 0
@@ -55,12 +56,19 @@ function entity:draw()
     end
 end
 
+
 function entity:delete()
-    for i=#world, 1, -1 do
-        if world[i] == self then
-            table.remove(world, i)
-        end
+    -- for i=#world, 1, -1 do
+    --     if world[i] == self then
+    --         table.remove(world, i)
+    --     end
+    -- end
+    if self.index ~= #world then
+        world[self.index], world[#world] = world[#world], world[self.index]
+        world[self.index].index = self.index
     end
+    table.remove(world, #world)
+    print(#world)
 end
 
 function entity:checkCollision()                
@@ -160,6 +168,7 @@ function shooter:shoot(projectile, targetX, targetY, shooter)
         x=shooter.x,
         y=shooter.y,
         direction=math.atan2(shooter.y - targetY, shooter.x - targetX)}))
+        posch.call("@entityCreated")
     end
 end
 
