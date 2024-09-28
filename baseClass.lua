@@ -55,6 +55,14 @@ function entity:draw()
     end
 end
 
+function entity:delete()
+    for i=#world, 1, -1 do
+        if world[i] == self then
+            table.remove(world, i)
+        end
+    end
+end
+
 function entity:checkCollision()                
     if self.colliderTag ~= nil then
     for _, obj in ipairs(world) do
@@ -74,7 +82,7 @@ function entity:checkCollision()
 end
 
 function entity:collided(collidingEnt)
-    print("bump")
+
 end
 
 function entity:move(x, y)
@@ -137,5 +145,37 @@ function entity:moveAndCollide(x, y, extraComp)
         if slide == false then
             self:move(-x)
         end
+    end
+end
+
+function entity:getDistance(object)
+    return math.sqrt( (object.x - self.x)^2 + (object.y - self.y)^2 )
+end
+
+
+shooter = Class()
+function shooter:shoot(projectile, targetX, targetY, shooter)
+    if projectile then
+    table.insert(world, projectile:new({
+        x=shooter.x,
+        y=shooter.y,
+        direction=math.atan2(shooter.y - targetY, shooter.x - targetX)}))
+    end
+end
+
+projectile = Class(entity)
+function projectile:init(args)
+    entity:init(args)
+    self.id = "projectile"
+    self.speed = args.speed or 10
+    self.direction = args.direction or 0
+end
+
+function projectile:update()
+    self.x = self.x - math.cos(self.direction)*self.speed
+    self.y = self.y - math.sin(self.direction)*self.speed
+    local collidingEnt = self:checkCollision()
+    if collidingEnt then
+        self:collided(collidingEnt)
     end
 end

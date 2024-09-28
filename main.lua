@@ -7,6 +7,7 @@ require('foundationClass')
 require('player')
 require('game.game')
 require('game.generation')
+require('bullets')
 
 globals = {}
 sWidth = love.graphics.getWidth()
@@ -18,7 +19,7 @@ local camera = require 'libs/camera'
 globals.cam = camera()
 globals.cam:zoom(2)
 
-
+local lazyUpdateCount = 0
 
 function love.load()
     world = {}
@@ -27,6 +28,12 @@ end
 
 function love.update(dt)
     posch.call("@update", dt)
+    lazyUpdateCount = lazyUpdateCount + 1
+    if lazyUpdateCount >= 10 then
+        posch.call("@lazyUpdate")
+        lazyUpdateCount = 0
+    end
+    
     for i, obj in ipairs(world) do
         if type(obj.update) == "function" then
             obj:update(dt)
@@ -49,7 +56,7 @@ function love.draw()
         end
     end
     table.sort(drawableList, function (a, b)
-        if a.drawDepth ~= b.drawDepth then
+        if a.render.drawDepth ~= b.render.drawDepth then
             return a.render.drawDepth < b.render.drawDepth
         else
             return a.y < b.y
@@ -63,6 +70,11 @@ function love.draw()
     globals.cam:detach()
 
 end
+
+function love.mousereleased(x, y, button)
+    posch.call("mouseReleased", x, y, button)
+end
+
 
 function love.keyreleased(key)
     if key == "escape" then

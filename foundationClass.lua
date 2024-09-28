@@ -23,7 +23,7 @@ function tile:init(args)
 
     self.width = args.width or 128
     self.height = args.height or 128
-    self.render.drawDepth = 1000
+    self.render.drawDepth = -1000
     self.render.quad = love.graphics.newQuad(0, 0, self.width,self.height, self.image:getWidth(), self.image:getHeight())
 end
 
@@ -31,8 +31,9 @@ function tile:draw()
     self.image:setWrap("repeat", "repeat")
     love.graphics.draw(self.image, self.render.quad, self.x, self.y, self.render.rotation, self.render.scaleX, self.render.scaleY, self.render.ox, self.render.oy)
 end
+
 -- player
-poes.player = Class(entity)
+poes.player = Class(entity, shooter)
 local player = poes.player
 function player:init(args)
     entity.init(self, args)
@@ -44,6 +45,8 @@ function player:init(args)
     self.speedMult = 1
     self.render.drawDepth = 100
     self.tag = {"ent"}
+
+    self.team = "player"
 end
 
 function player:update(dt)
@@ -71,4 +74,11 @@ function player:update(dt)
         self.speedMult = 1
     end
     self:moveAndCollide(self.vx*self.speed*self.speedMult*dt, self.vy*self.speed*self.speedMult*dt, {slide={perfectAlign=true}})
+
+end
+
+function player:triggerShoot()
+    local bulletProj = poes.basic_bullet
+    local spawnCoord = {x=self.x+self.width/2, y=self.y+self.height/2}
+    self:shoot(bulletProj, self.x+(love.mouse.getX()-sWidth/2), self.y+(love.mouse.getY()-sHeight/2), spawnCoord)
 end
