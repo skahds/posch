@@ -1,12 +1,12 @@
 local playerEnt = nil
 local debugFont = nil
-
-
+local newCursor = nil
 posch.on("@loaded", function ()
     local poes = posch.entities
 
     love.graphics.setDefaultFilter("nearest", "nearest")
     debugFont = love.graphics.newFont(40)
+    newCursor = love.graphics.newImage('assets/image/shootingCursor.png')
 
     table.insert(world, poes.player:new({x=120, y=120, width=12, height=15, speed=200, colliderTag={"ent"}}))
 
@@ -34,7 +34,11 @@ posch.on("@update", function ()
     posch.updateStorage("playerXY", {x=playerEnt.x, y=playerEnt.y})
     posch.updateStorage("isShootDown", love.mouse.isDown(1))
 
-    globals.cam:lookAt((posch.get("playerXY").x+(love.mouse.getX()-sWidth/2)/10), (posch.get("playerXY").y+(love.mouse.getY()-sHeight/2)/10))
+    local cameraX, cameraY = globals.cam:position()
+    posch.updateStorage("relativeMouseXY", {x=playerEnt.x+(love.mouse.getX()-sWidth/2), y=playerEnt.y+(love.mouse.getY()-sHeight/2)})
+
+    globals.cam:lookAt((posch.get("playerXY").x+(love.mouse.getX()-sWidth/2)/15),
+    (posch.get("playerXY").y+(love.mouse.getY()-sHeight/2)/15))
 end)
 
 posch.on("@lazyUpdate", function ()
@@ -60,4 +64,5 @@ end)
 posch.on("@render:renderOutsideCamera", function ()
     love.graphics.setFont(debugFont)
     love.graphics.print(playerEnt.gun.name)
+    love.graphics.draw(newCursor, love.mouse.getX()-(newCursor:getWidth()/2*globals.cam.scale), love.mouse.getY()-(newCursor:getHeight()/2*globals.cam.scale), 0, globals.cam.scale)
 end)

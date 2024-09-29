@@ -162,12 +162,20 @@ end
 
 
 shooter = Class()
-function shooter:shoot(projectile, targetX, targetY, shooter)
-    if projectile then
-    table.insert(world, projectile:new({
+function shooter:shoot(gun, targetX, targetY, shooter, extraComp)
+    extraComp = extraComp or {}
+    if gun then
+        local degree = extraComp.degree
+        if degree then degree = math.rad(degree) else degree = 0 end
+        
+        local direction = math.atan2(shooter.y - targetY, shooter.x - targetX) + degree
+        table.insert(world, gun.bulletClass:new({
         x=shooter.x,
         y=shooter.y,
-        direction=math.atan2(shooter.y - targetY, shooter.x - targetX)}))
+        bulletType = gun.bullet,
+        direction=direction}))
+        world[#world].render.rotation = direction
+
         posch.call("@entityCreated")
     end
 end
@@ -184,7 +192,13 @@ function projectile:update()
     self.x = self.x - math.cos(self.direction)*self.speed
     self.y = self.y - math.sin(self.direction)*self.speed
     local collidingEnt = self:checkCollision()
+
+    if type(self.bulletType.onActive) == "function" then
+        self.bulletType.onActive(self)
+    end
+        
     if collidingEnt then
         self:collided(collidingEnt)
+        collidingEnt:collided(self)
     end
 end

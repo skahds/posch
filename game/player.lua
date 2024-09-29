@@ -14,7 +14,7 @@ function player:init(args)
     self.tag = {"ent"}
 
     self.team = "player"
-    self.gun = posch.guns.basic_gun
+    self.gun = posch.guns.triple_minigun
     self.gun.currentTimeBetweenShot = 0
 end
 
@@ -60,8 +60,12 @@ end
 
 function player:triggerShoot()
     if self.gun ~= nil then
-        local bulletProj = self.gun.bullet
-        local spawnCoord = {x=self.x, y=self.y}
-        self:shoot(bulletProj, self.x+(love.mouse.getX()-sWidth/2), self.y+(love.mouse.getY()-sHeight/2), spawnCoord)
+        if self.gun.onActive == nil then
+            local gun = self.gun
+            local spawnCoord = {x=self.x, y=self.y}
+            self:shoot(gun, posch.get("relativeMouseXY").x, posch.get("relativeMouseXY").y, spawnCoord)
+        else
+            self.gun.onActive(self)
+        end
     end
 end

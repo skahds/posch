@@ -2,7 +2,7 @@ require('broadcast')
 require('class')
 require('baseClass')
 require('collision')
-require('foundationClass')
+require('gameClasses')
 
 require('game.player')
 require('game.game')
