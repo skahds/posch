@@ -4,10 +4,10 @@ local newCursor = nil
 posch.on("@loaded", function ()
     local poes = posch.entities
 
-    love.graphics.setDefaultFilter("nearest", "nearest")
+
     debugFont = love.graphics.newFont(40)
     newCursor = love.graphics.newImage('assets/image/shootingCursor.png')
-    -- love.mouse.setVisible(false)
+    love.mouse.setVisible(false)
 
     table.insert(world, poes.player:new({x=120, y=120, width=12, height=15, speed=200, colliderTag={"ent"}}))
 

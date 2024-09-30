@@ -39,7 +39,7 @@ posch.bullets = {
         width = 8,
         height = 12,
         image = love.graphics.newImage("assets/image/basic_bullet.png"),
-        speed = 10,
+        speed = 5,
         colliderTag = {ent=true},
         colliderIgnoreTag = {player=true}
     }

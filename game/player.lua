@@ -18,6 +18,25 @@ function player:init(args)
     self.gun.currentTimeBetweenShot = 0
 end
 
+function player:draw()
+    if self.image then
+        love.graphics.draw(self.image, self.x, self.y, self.render.rotation, self.render.scaleX, self.render.scaleY, self.render.ox, self.render.oy)
+    elseif self.x ~= nil and self.y ~= nil and self.width ~= nil and self.height ~= nil then
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    end
+    
+    if self.gun then
+        if self.gun.image then
+            local gunDirection = math.atan2(posch.get("relativeMouseXY").y-(self.y+self.height/2), posch.get("relativeMouseXY").x-(self.x+self.width/2))
+            if math.deg(gunDirection)+90 > 180 or math.deg(gunDirection)+90 < 0 then
+                love.graphics.draw(self.gun.image, self.x+self.gun.image:getWidth()/2, self.y, gunDirection, 1, -1)
+            else
+                love.graphics.draw(self.gun.image, self.x+self.gun.image:getWidth()/2, self.y, gunDirection)
+            end
+        end
+    end
+end
+
 function player:update(dt)
     -- move func
     local lk = love.keyboard
