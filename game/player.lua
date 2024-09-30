@@ -11,9 +11,9 @@ function player:init(args)
     self.vy = 0
     self.speedMult = 1
     self.render.drawDepth = 0
-    self.tag = {"ent"}
+    self.tag = {"ent", "player"}
 
-    self.team = "player"
+    -- self.team = "player"
     self.gun = posch.guns.triple_minigun
     self.gun.currentTimeBetweenShot = 0
 end
@@ -62,7 +62,7 @@ function player:triggerShoot()
     if self.gun ~= nil then
         if self.gun.onActive == nil then
             local gun = self.gun
-            local spawnCoord = {x=self.x, y=self.y}
+            local spawnCoord = {x=self.x+self.width/2, y=self.y+self.height/2}
             self:shoot(gun, posch.get("relativeMouseXY").x, posch.get("relativeMouseXY").y, spawnCoord)
         else
             self.gun.onActive(self)

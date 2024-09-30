@@ -27,9 +27,26 @@ function entity:init(args)
     self.y = args.y or 0
     self.width = args.width or 100
     self.height = args.height or 100
-    self.colliderTag = args.colliderTag or nil
+
+    self.colliderTag = {}
+    self.tag = {}
+    self.colliderIgnoreTag = {}
+    if args.colliderTag then
+        for k, v in pairs(args.colliderTag) do
+            self.colliderTag[v] = true
+        end
+    end
     --remember, basic tags are "ent"
-    self.tag = args.tag or nil
+    if args.tag then
+        for k, v in pairs(args.tag) do
+            self[v] = true
+        end
+    end
+    if args.colliderIgnoreTag then
+        for k, v in ipairs(args.colliderIgnoreTag) do
+            self.colliderIgnoreTag[v] = true
+        end
+    end
 
     self.particles = {}
     self.image = args.image or nil
@@ -74,15 +91,23 @@ end
 function entity:checkCollision()                
     if self.colliderTag ~= nil then
     for _, obj in ipairs(world) do
-        if obj ~= self and obj.tag then
+        if obj.index ~= self.index and #obj.tag > 0 then
             if collisionSystem.AABB_Collision(self, obj) then
-                for _, CollideTag in ipairs(obj.tag) do
-                    for _, selfCollideTag in ipairs(self.colliderTag) do
-                        if CollideTag == selfCollideTag then
-                            return obj
-                        end
+                -- make sure collide check is always true
+                local collideCheck = true
+                for k, CollideTag in pairs(obj.tag) do
+                    if self.colliderTag[CollideTag] == true and self.colliderIgnoreTag[CollideTag] ~= true then
+
+                    else
+                        collideCheck = false
                     end
                 end
+                if collideCheck == false then
+                    return false
+                else
+                    return obj
+                end
+
             end
         end
     end

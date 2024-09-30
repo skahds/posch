@@ -6,12 +6,13 @@ function basic_bullet:init(args)
     projectile.init(self, args)
 
     self.bulletType = args.bulletType or posch.bullets.basic_bullet
+
     for k, v in pairs(self.bulletType) do
         self[k] = v
     end
 
-    self.x = self.x+self.width/2
-    self.y = self.y+self.height/2
+    -- self.x = self.x+self.width/2
+    -- self.y = self.y+self.height/2
 
     self.render.drawDepth = -1
     self.team = args.team or "player"
@@ -38,8 +39,9 @@ posch.bullets = {
         width = 8,
         height = 12,
         image = love.graphics.newImage("assets/image/basic_bullet.png"),
-        speed = 5,
-        colliderTag = {"ent"},
+        speed = 10,
+        colliderTag = {ent=true},
+        colliderIgnoreTag = {player=true}
     }
 
 }

@@ -30,7 +30,7 @@ end
 function love.update(dt)
     posch.call("@update", dt)
     lazyUpdateCount = lazyUpdateCount + 1
-    if lazyUpdateCount >= 10 then
+    if lazyUpdateCount >= 30 then
         posch.call("@lazyUpdate")
         lazyUpdateCount = 0
     end

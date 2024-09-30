@@ -7,6 +7,7 @@ posch.on("@loaded", function ()
     love.graphics.setDefaultFilter("nearest", "nearest")
     debugFont = love.graphics.newFont(40)
     newCursor = love.graphics.newImage('assets/image/shootingCursor.png')
+    -- love.mouse.setVisible(false)
 
     table.insert(world, poes.player:new({x=120, y=120, width=12, height=15, speed=200, colliderTag={"ent"}}))
 
@@ -21,13 +22,13 @@ posch.on("@loaded", function ()
         posch.updateStorage("playerXY", {x=playerEnt.x, y=playerEnt.y})
     end
 
+
 end)
 
 posch.on("@render:render", function ()
     love.graphics.setBackgroundColor(0.7, 0.3, 0.2)
 end)
 
-local lazyUpdateCount = 0
 posch.on("@update", function ()
 
 
@@ -42,7 +43,7 @@ posch.on("@update", function ()
 end)
 
 posch.on("@lazyUpdate", function ()
-    for i=1, #world do
+    for i=#world, 1, -1 do
         local obj = world[i]
         if obj:getID() == "basic_bullet" then
             if obj:getDistance(posch.get("playerXY")) > 600 then

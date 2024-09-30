@@ -1,6 +1,6 @@
 local grid = {}
-local width = 50
-local height = 50
+local width = 30
+local height = 30
 local tileSize = 16
 
 
